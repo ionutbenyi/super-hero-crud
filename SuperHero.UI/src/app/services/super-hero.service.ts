@@ -1,20 +1,31 @@
-import { Injectable } from '@angular/core';
+import { APP_BASE_HREF } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { SuperHero } from '../model/super-hero';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class SuperHeroService {
 
-constructor() { }
+    url = "SuperHero";
+    constructor(private http: HttpClient, @Inject(APP_BASE_HREF) private baseHref: string) { }
 
-public GetSuperHeroes(): SuperHero[] {
-    var hero = new SuperHero();
-    hero.id = 1;
-    hero.name = "Spider-Man";
-    hero.firstName="Peter";
-    hero.lastName="Parker";
-    hero.place="New York City";
+    public getSuperHeroes(): Observable<SuperHero[]> {
+        return this.http.get<SuperHero[]>(`${this.baseHref}/${this.url}`);
+    }
 
-    return [hero];
-}
+    public updateSuperHero(hero: SuperHero): Observable<SuperHero[]> {
+        return this.http.put<SuperHero[]>(`${this.baseHref}/${this.url}`, hero);
+    }
+
+    public addSuperHero(hero: SuperHero): Observable<SuperHero[]> {
+        return this.http.post<SuperHero[]>(`${this.baseHref}/${this.url}`, hero);
+    }
+
+    public deleteSuperHero(hero: SuperHero): Observable<SuperHero[]> {
+        return this.http.delete<SuperHero[]>(`${this.baseHref}/${this.url}/${hero.id}`);
+    }
 
 }
